@@ -1,4 +1,8 @@
-import * as PIXI from "pixi.js"
+import * as PIXI from "pixi.js";
+import * as dat from 'dat.gui';
+import { gsap } from 'gsap';
+import { easeIn, easeInOut, easeOut, lerp } from './easing';
+import { wrapYoyo } from 'gsap/all';
 
 const main = async () => {
     let app = new PIXI.Application();
@@ -12,33 +16,14 @@ const main = async () => {
     // View size = windows
     app.renderer.resize(window.innerWidth, window.innerHeight);
 
-    const path = new PIXI.Graphics();
-    path.lineStyle(1, 0xababab, 1)
+    var obj = {prop: 10}
 
-    let radius = 1
-    let fib = 0
-    let temp
-
-    let angle = 0
-    let scale = 2
-
-    let fillArray = [0x9CB376, 0xDBE6FF, 0xFFB7A8, 0xB3887F]
-
-    for (let i = 0; i < innerHeight; i += radius) {
-        for (let j = 0; j < innerWidth; j += radius) {
-            path.drawCircle(innerWidth/2 + Math.cos(angle)*scale, innerHeight/2 + Math.sin(angle)*scale, radius*2)
-            angle += 0.2
-            scale += radius/13
-        }
-        let color = fillArray[Math.floor(Math.random()*fillArray.length)]
-        path.beginFill(color, 0.7)
-
-        temp = radius
-        radius += fib // fibonacci incrementation
-        fib = temp 
-    }
-    
-    app.stage.addChild(path);
+    gsap.to(obj, {
+        duration: 1, // time in seconds of the animation
+        prop: 200, // property to change
+        onUpdate: function() { // called every update
+          console.log(obj.prop);
+      } });
 
     // Handle window resizing
     window.addEventListener('resize', (_e) => {
