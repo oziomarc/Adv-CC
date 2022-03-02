@@ -74,7 +74,7 @@ function update(delta:number){
     view.forEach((shape, i) => {
         shape.clear()
         shape.beginFill(0xFFDC00)
-        shape.drawRoundedRect(0,0,shapes[i].width,shapes[i].height, 0)
+        shape.drawRoundedRect(0,0,shapes[i].width,shapes[i].height, 30)
     })
 } 
 
