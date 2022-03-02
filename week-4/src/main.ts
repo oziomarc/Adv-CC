@@ -3,8 +3,8 @@ import { gsap } from "gsap";
 
 let tl = gsap.timeline();
 
-let graphs: Array<PIXI.Graphics> = []
-let sizes: Array<any> = []
+let view: Array<PIXI.Graphics> = []
+let shapes: Array<any> = []
 
 const main = async () => {
   // Actual app
@@ -15,7 +15,7 @@ const main = async () => {
   app.renderer.view.style.position = 'absolute';
   app.renderer.view.style.display = 'block';
 
-  // View size = windows
+  // View frame = windows
   app.renderer.resize(window.innerWidth, window.innerHeight);
 
   // Handle window resizing
@@ -23,91 +23,59 @@ const main = async () => {
       app.renderer.resize(window.innerWidth, window.innerHeight);
   });
 
-  //WORK GOES HERsE
-  let total = Math.floor(window.innerWidth / 20);
+  let span = Math.floor(window.innerWidth / 10);
 
-    for (let i = 0; i < total; i++) {
-
-        if (i % 2 == 0){
-
-            const element = new PIXI.Graphics();
-            element.x = 0
-            element.y = window.innerHeight
+    for (let i = 0; i < span; ++i) {
+        const element = new PIXI.Graphics();
+        element.x = 0
+        element.y = window.innerHeight
+        element.x += 20 * i
     
-            element.x += 30 * i
-    
-            graphs.push(element)
-            app.stage.addChild(element)
+        view.push(element)
+        app.stage.addChild(element)
 
-
-        } else {
-
-            const element = new PIXI.Graphics();
-            element.x = 0
-            element.y = 0
-    
-            element.x += 30 * i
-    
-            graphs.push(element)
-            app.stage.addChild(element)
-
-        }
-
-        sizes[i] = {
+        shapes[i] = {
             height: 0,
-            width: 20,
-            radius: 20
+            width: 15
         };
-
     }
 
     document.body.appendChild(app.view);
 
-    sizes.forEach((size, i) => {
-
+    shapes.forEach((frame, i) => {
         if (i % 2 == 0){
-
             tl       
-                .to(size,{
-                    height: -window.innerHeight,
-                    duration: 2
-                }, 0+i/50)
-                .to(size,{
-                    height: 0,
-                    duration: 2
-                }, 0.8+i/50)
-
-
-        } else {
-
-            tl
-                .to(size,{
+                .to(frame,{
                     height: window.innerHeight,
-                    duration: 2
-                } , 0+i/50)
-                .to(size,{
+                    duration: 3.2
+                }, 0+i/50)
+                .to(frame,{
                     height: 0,
-                    duration: 2
-                }, 0.8+i/50)
-
-
+                    duration: 1.5
+                }, 1.7+i/50)
+        } else {
+            tl
+                .to(frame,{
+                    height: -window.innerHeight+20,
+                    duration: 1.5
+                } , i/19)
+                .to(frame,{
+                    height: 0,
+                    duration: 3
+                }, 1.7+i/20)
         }
-
-
     })
 
-    tl.repeat(2)
-
+    tl.repeat(4)
     app.ticker.add(update);
 }
 
 function update(delta:number){
-    graphs.forEach((graph, i) => {
-        graph.clear()
-        graph.beginFill(0xffffff)
-        graph.drawRoundedRect(0,0,sizes[i].width,sizes[i].height,sizes[i].radius)
+    view.forEach((shape, i) => {
+        shape.clear()
+        shape.beginFill(0xFFDC00)
+        shape.drawRoundedRect(0,0,shapes[i].width,shapes[i].height, 0)
     })
 } 
-
 
 main();
