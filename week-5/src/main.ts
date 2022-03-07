@@ -8,7 +8,7 @@ const load = (app: PIXI.Application) => {
     return new Promise<void>((resolve) => {
         app.loader
         .add('world1', 'assets/hello-world.png')
-        .add('star', '.dist/assets/star.png')
+        .add('star', './dist/assets/star.png')
         .load(() => {
             resolve();
         });
@@ -178,7 +178,7 @@ const main = async () => {
     p4.interactive = true;
     p4.buttonMode = true;
 
-    
+    p1.on('pointerdown', reversePlanet)
     
 
     
@@ -312,6 +312,10 @@ function showRings(this: any, ring: any) {
     this.isover = true
     ring.clear
     ring.lineStyle(1, 0x000B38)
+}
+
+function reversePlanet() {
+    // container1.rotation * -1
 }
 
 // function changeColor() {
