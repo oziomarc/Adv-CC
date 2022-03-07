@@ -80,11 +80,11 @@ const main = async () => {
 
     app.stage.addChild(container);
     app.stage.addChild(container, container1, container2, container3, container4);
-    const texture = PIXI.Texture.from('./assets/star.png');
-    const texture1 = PIXI.Texture.from('./assets/p1.png');
-    const texture2 = PIXI.Texture.from('./assets/p2.png');
-    const texture3 = PIXI.Texture.from('./assets/p3.png');
-    const texture4 = PIXI.Texture.from('./assets/p4.png');
+    const texture = PIXI.Texture.from('./dist/assets/star.png');
+    const texture1 = PIXI.Texture.from('./dist/assets/p1.png');
+    const texture2 = PIXI.Texture.from('./dist/assets/p2.png');
+    const texture3 = PIXI.Texture.from('./dist/assets/p3.png');
+    const texture4 = PIXI.Texture.from('./dist/assets/p4.png');
 
     const p1 = new PIXI.Sprite(texture1);
     const p2 = new PIXI.Sprite(texture2);
