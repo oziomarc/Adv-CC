@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js"
 import { gsap } from "gsap";
 import {GlowFilter} from '@pixi/filter-glow';
 import * as dat from 'dat.gui';
+import { Sprite } from "pixi.js";
 // import {Container} from 'pixi.js';
 
 const load = (app: PIXI.Application) => {
@@ -15,10 +16,10 @@ const load = (app: PIXI.Application) => {
     });
 };
 
-let tl = gsap.timeline();
+// let tl = gsap.timeline();
 
-let view: Array<PIXI.Graphics> = []
-let planets: Array<any> = []
+// let view: Array<PIXI.Graphics> = []
+// let planets: Array<any> = []
 
 let model = {
     planetData: {
@@ -28,7 +29,6 @@ let model = {
       isPressed: false
     }
 }
-// PLANETS
 
 const main = async () => {
     // Actual app
@@ -52,6 +52,26 @@ const main = async () => {
 
     app.stage.interactive = true;
 
+    // GUI stuff:
+  
+    // direction of planet
+    // color of sun
+    const gui = new dat.GUI();
+    gui.add(model.planetData, "radius", 50, 100);
+    gui.add(model.planetData, "speed", 10, 100)
+    // gui.addColor()
+    // app.ticker.add(update)
+    // gui.add(model.getInstance().data, 'lineWidth', 0, 10)
+    // gui.addColor(model.getInstance().data, 'color')
+
+    // change color of planets
+    var palette = { // SOURCE - https://github.com/dataarts/dat.gui/blob/HEAD/API.md
+        color1: '#FF0000', // CSS string
+        color2: [ 0, 128, 255 ], // RGB array
+        color3: [ 0, 128, 255, 0.3 ], // RGB with alpha
+        color4: { h: 350, s: 0.9, v: 0.3 } // Hue, saturation, value
+    };
+
     // RINGS
         //--> does each planet need it's own delta/update function so they go at different speeds?
 
@@ -71,7 +91,7 @@ const main = async () => {
         app.stage.addChild(ring)
     }
 
-    // make a container of stars that rotates
+    // PLANETS
     const container = new PIXI.Container();
     const container1 = new PIXI.Container();
     const container2 = new PIXI.Container();
@@ -131,6 +151,7 @@ const main = async () => {
     container4.pivot.x = container4.width / 2;
     container4.pivot.y = container4.height / 2 + 120;
 
+    // STARS
     for (let i = 0; i < 80; i++) {
         const star = new PIXI.Sprite(texture);
         star.scale.set(0.02)
@@ -165,10 +186,6 @@ const main = async () => {
     let glowFilter = new GlowFilter({ color: 0xFD6B28, distance: 45 });
     sun.filters = [glowFilter]
 
-    
-
-
-    // p1.on click -> update color with gui value...
     p1.interactive = true;
     p1.buttonMode = true;
     p2.interactive = true;
@@ -179,155 +196,46 @@ const main = async () => {
     p4.buttonMode = true;
 
     p1.on('pointerdown', reversePlanet)
-    
-
-    
-    // p1.width = 100;
-    // p1.height = 100;
-    
-    
-
-    
-
-    // app.ticker.add((delta) => { 
-    //     // rotate planet 1 ???
-    //     // container1.rotation -= 0.002 * delta;
-    // });
-
-    
-
-    p1.on('pointerdown', () => {model.planetData.isPressed = true})
     p1.on('pointerup', () => {model.planetData.isPressed = false})
 
     p2.x = 400;
     p2.y = 200;
     p2.width = 100;
     p2.height = 100;
-    
-    // p2.beginFill(0xffffff)
-    // p2.drawCircle(p2.x, p2.y, 60)
 
     p3.x = 300;
     p3.y = 200;
     p3.width = 100;
     p3.height = 100;
-    
-    // p3.beginFill(0xffffff)
-    // p3.drawCircle(p3.x, p3.y, 70)
 
     p4.x = 100;
     p4.y = 200;
     p4.width = 100;
     p4.height = 100;
     
-    // p4.beginFill(0xffffff)
-    // p4.drawCircle(p4.x, p4.y, 90)
-
-
-    // for (let i = 0; i < span; ++i) {
-    //     const element = new PIXI.Graphics();
-    //     element.x = 0
-    //     element.y = window.innerHeight
-    //     element.x += 20 * i
-    
-    //     view.push(element)
-    //     app.stage.addChild(element)
-
-    //     planets[i] = {
-    //         height: 0,
-    //         width: 15
-    //     };
-    // }
-
     document.body.appendChild(app.view);
     app.stage.addChild(sun);
     app.stage.addChild()
-    
 
- 
-    // GUI stuff:
-  
-    // change size of planets
-    const gui = new dat.GUI();
-    gui.add(model.planetData, "radius", 50, 100);
-
-    // change color of planets
-    var palette = { // SOURCE - https://github.com/dataarts/dat.gui/blob/HEAD/API.md
-        color1: '#FF0000', // CSS string
-        color2: [ 0, 128, 255 ], // RGB array
-        color3: [ 0, 128, 255, 0.3 ], // RGB with alpha
-        color4: { h: 350, s: 0.9, v: 0.3 } // Hue, saturation, value
-    };
-
-    gui.add(model.planetData, "speed", 10, 100)
-    gui.addColor(palette, 'color1');
-
-    // p1.beginFill()
-    // p1.drawCircle(p1.x, p1.y, 50)
-
-    // change comet path
-    // change comet speed
-
-    // mouse interactions
-    
-    // app.stage.on("pointerover", showRings);
-    // window.addEventListener("pointerdown", drawArt);
-    // app.ticker.add(gameLoop1);
-    
-
-    planets.forEach((frame, i) => { // move planets
-        if (i % 2 == 0){
-            tl       
-                .to(frame,{
-                    height: window.innerHeight,
-                    duration: 3.2
-                }, 0+i/50)
-                .to(frame,{
-                    height: 0,
-                    duration: 1.5
-                }, 1.7+i/50)
-        } else {
-            tl
-                .to(frame,{
-                    height: -window.innerHeight+20,
-                    duration: 1.5
-                } , i/19)
-                .to(frame,{
-                    height: 0,
-                    duration: 3
-                }, 1.7+i/20)
-        }
-    })
-
-    tl.repeat(4) // make infinite
-    app.ticker.add(update);
 }
 
-function update(){
+// function update(delta:number) {
+//     let tempColor = model.planetData.color
+//     tempColor = '0x' + tempColor;
     
-} 
+//     bg.beginFill(tempColor);
+//     bg.drawRect(0,0,window.innerWidth,window.innerHeight);
+// } 
 
 function showRings(this: any, ring: any) {
     console.log('Pointer over ring');
-    this.isover = true
     ring.clear
     ring.lineStyle(1, 0x000B38)
 }
 
 function reversePlanet() {
+    console.log('reverse planet')
     // container1.rotation * -1
 }
-
-// function changeColor() {
-//     button.clear()
-//     if (planetData.isPressed) {
-//         planet.beginFill(0xffff00)
-//     } else if (buttonData.isOver) {
-//         button.beginFill(0xff00ff)
-//     } else {
-//         button.beginFill(0x0000ff)
-//     }
-//     button.drawRoundedRect(100, 100, buttonData.width, buttonData.height, 15)
-// }
 
 main();
