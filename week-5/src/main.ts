@@ -26,7 +26,7 @@ let model = {
       radius: 90,
       color: 0xffffff,
       speed: 10,
-      isPressed: false
+    //   isPressed: false
     }
 }
 
@@ -50,30 +50,11 @@ const main = async () => {
         app.renderer.resize(window.innerWidth, window.innerHeight);
     });
 
-    app.stage.interactive = true;
+    // app.stage.interactive = true;
 
-    // GUI stuff:
-  
-    // direction of planet
-    // color of sun
-    const gui = new dat.GUI();
-    gui.add(model.planetData, "radius", 50, 100);
-    gui.add(model.planetData, "speed", 10, 100)
-    // gui.addColor()
-    // app.ticker.add(update)
-    // gui.add(model.getInstance().data, 'lineWidth', 0, 10)
-    // gui.addColor(model.getInstance().data, 'color')
-
-    // change color of planets
-    var palette = { // SOURCE - https://github.com/dataarts/dat.gui/blob/HEAD/API.md
-        color1: '#FF0000', // CSS string
-        color2: [ 0, 128, 255 ], // RGB array
-        color3: [ 0, 128, 255, 0.3 ], // RGB with alpha
-        color4: { h: 350, s: 0.9, v: 0.3 } // Hue, saturation, value
-    };
+    
 
     // RINGS
-        //--> does each planet need it's own delta/update function so they go at different speeds?
 
     let ringData = {
         isOver: false,
@@ -165,17 +146,67 @@ const main = async () => {
     container.y = app.screen.height / 2;
     container.pivot.x = container.width / 2;
     container.pivot.y = container.height / 2;
-    
+    let oneisPressed = false
+    let twoisPressed = false
+    let threeisPressed = false
+    let fourisPressed = false
     // SOURCE - https://pixijs.io/examples/#/demos-basic/container.js
     app.ticker.add((delta) => {
-        // rotate the container!
-        // use delta to create frame-independent transform
-        container.rotation += 0.00015 * delta;
-        container1.rotation -= 0.009 * delta;
-        container2.rotation -= 0.009 * delta;
-        container3.rotation -= 0.009 * delta;
-        container4.rotation -= 0.009 * delta;
+        // cause the planets' containers to revolve around the sun
+        if(oneisPressed){
+            container.rotation += 0.00015 * delta;
+            container1.rotation += 0.009 * delta;
+            container2.rotation -= 0.009 * delta;
+            container3.rotation -= 0.009 * delta;
+            container4.rotation -= 0.009 * delta;
+        } else if(twoisPressed) {
+            container.rotation += 0.00015 * delta;
+            container1.rotation -= 0.009 * delta;
+            container2.rotation += 0.009 * delta;
+            container3.rotation -= 0.009 * delta;
+            container4.rotation -= 0.009 * delta;
+        } else if(threeisPressed) {
+            container.rotation += 0.00015 * delta;
+            container1.rotation -= 0.009 * delta;
+            container2.rotation -= 0.009 * delta;
+            container3.rotation += 0.009 * delta;
+            container4.rotation -= 0.009 * delta;
+        } else if(fourisPressed) {
+            container.rotation += 0.00015 * delta;
+            container1.rotation -= 0.009 * delta;
+            container2.rotation -= 0.009 * delta;
+            container3.rotation -= 0.009 * delta;
+            container4.rotation += 0.009 * delta;
+        }
+         else {
+            container.rotation += 0.00015 * delta;
+            container1.rotation -= 0.009 * delta;
+            container2.rotation -= 0.009 * delta;
+            container3.rotation -= 0.009 * delta;
+            container4.rotation -= 0.009 * delta;
+        }
     });
+
+    p1.interactive = true;
+    p1.buttonMode = true;
+    p1.on('pointerdown',()=>{ // reverse direction of planet revolution on click
+        oneisPressed = true
+    })
+    p2.interactive = true;
+    p2.buttonMode = true;
+    p2.on('pointerdown',()=>{ // reverse direction of planet revolution on click
+        twoisPressed = true
+    })
+    p3.interactive = true;
+    p3.buttonMode = true;
+    p3.on('pointerdown',()=>{ // reverse direction of planet revolution on click
+        threeisPressed = true
+    })
+    p4.interactive = true;
+    p4.buttonMode = true;
+    p4.on('pointerdown',()=>{ // reverse direction of planet revolution on click
+        fourisPressed = true
+    })
 
     // SOLAR SYSTEM
 
@@ -186,17 +217,24 @@ const main = async () => {
     let glowFilter = new GlowFilter({ color: 0xFD6B28, distance: 45 });
     sun.filters = [glowFilter]
 
-    p1.interactive = true;
-    p1.buttonMode = true;
-    p2.interactive = true;
-    p2.buttonMode = true;
-    p3.interactive = true;
-    p3.buttonMode = true;
-    p4.interactive = true;
-    p4.buttonMode = true;
+    // GUI stuff:
+    // app.ticker.add(update)
+    // gui.add(model.getInstance().data, 'lineWidth', 0, 10)
+    // gui.addColor(model.getInstance().data, 'color')
 
-    p1.on('pointerdown', reversePlanet)
-    p1.on('pointerup', () => {model.planetData.isPressed = false})
+    // color of sun
+    var palette = { // SOURCE - https://github.com/dataarts/dat.gui/blob/HEAD/API.md
+        color1: '#FF0000', // CSS string
+        color2: [ 0, 128, 255 ], // RGB array
+        color3: [ 0, 128, 255, 0.3 ], // RGB with alpha
+        color4: { h: 350, s: 0.9, v: 0.3 } // Hue, saturation, value
+    };
+
+    let gui = new dat.GUI();
+    let folder1 = gui.addFolder('My folder');
+    // gui.add(model.planetData, "speed", 10, 100)
+    gui.add(sun, 'beginFill')
+    gui.addColor(palette, 'color1')
 
     p2.x = 400;
     p2.y = 200;
@@ -215,10 +253,9 @@ const main = async () => {
     
     document.body.appendChild(app.view);
     app.stage.addChild(sun);
-    app.stage.addChild()
 
 }
-
+main();
 // function update(delta:number) {
 //     let tempColor = model.planetData.color
 //     tempColor = '0x' + tempColor;
@@ -238,4 +275,3 @@ function reversePlanet() {
     // container1.rotation * -1
 }
 
-main();
