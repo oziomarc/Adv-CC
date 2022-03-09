@@ -156,32 +156,32 @@ const main = async () => {
         if(oneisPressed){
             container.rotation += 0.00015 * delta;
             container1.rotation += 0.009 * delta;
-            container2.rotation -= 0.009 * delta;
+            container2.rotation -= 0.004 * delta;
             container3.rotation -= 0.009 * delta;
             container4.rotation -= 0.009 * delta;
         } else if(twoisPressed) {
             container.rotation += 0.00015 * delta;
             container1.rotation -= 0.009 * delta;
-            container2.rotation += 0.009 * delta;
-            container3.rotation -= 0.009 * delta;
+            container2.rotation += 0.004 * delta;
+            container3.rotation -= 0.006 * delta;
             container4.rotation -= 0.009 * delta;
         } else if(threeisPressed) {
             container.rotation += 0.00015 * delta;
             container1.rotation -= 0.009 * delta;
-            container2.rotation -= 0.009 * delta;
-            container3.rotation += 0.009 * delta;
+            container2.rotation -= 0.004 * delta;
+            container3.rotation += 0.006 * delta;
             container4.rotation -= 0.009 * delta;
         } else if(fourisPressed) {
             container.rotation += 0.00015 * delta;
             container1.rotation -= 0.009 * delta;
-            container2.rotation -= 0.009 * delta;
+            container2.rotation -= 0.004 * delta;
             container3.rotation -= 0.009 * delta;
             container4.rotation += 0.009 * delta;
         }
          else {
             container.rotation += 0.00015 * delta;
             container1.rotation -= 0.009 * delta;
-            container2.rotation -= 0.009 * delta;
+            container2.rotation -= 0.004 * delta;
             container3.rotation -= 0.009 * delta;
             container4.rotation -= 0.009 * delta;
         }
