@@ -128,9 +128,9 @@ function initScene() {
 
     // // load a texture
     var loader = new THREE.TextureLoader();
-    var texture2 = loader.load('.dist/resources/textures/b4.png');
-    var texture3 = loader.load('.dist/resources/textures/b6.jpeg');
-    var texture4 = loader.load('.dist/resources/textures/b5.jpeg');
+    var texture2 = loader.load('.resources/textures/b4.png');
+    var texture3 = loader.load('.resources/textures/b6.jpeg');
+    var texture4 = loader.load('./resources/textures/b5.jpeg');
     let textureMaterial2 = new THREE.MeshBasicMaterial({ map: texture2 });
     let textureMaterial3 = new THREE.MeshBasicMaterial({ map: texture3 });
     let textureMaterial4 = new THREE.MeshBasicMaterial({ map: texture4 });
