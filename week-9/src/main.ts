@@ -1,3 +1,4 @@
+// Week 9 Assignment: Still Life
 import './style.scss';
 import * as THREE from 'three'; 1
 import Stats from 'three/examples/jsm/libs/stats.module';
@@ -16,7 +17,12 @@ let lightPoint: THREE.PointLight;
 let controls: OrbitControls;
 let stats: any;
 
-let cube: THREE.Mesh;
+let b1: THREE.Mesh; // colon vs equal sign
+let b2: THREE.Mesh;
+let b3: THREE.Mesh;
+let b4: THREE.Mesh;
+let b5: THREE.Mesh;
+
 let plane: THREE.Mesh;
 let exampleModel: THREE.Group;
 let exampleTexture: THREE.Texture;
@@ -38,6 +44,7 @@ function initStats() { // gives readout of frame rate for debugging, 3js lib
 
 function initScene() {
     scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0xADEBFF );
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
@@ -78,57 +85,103 @@ function initScene() {
     // lightPoint.shadow.camera.near = cameraNear;
     // lightPoint.shadow.camera.far = cameraFar;
 
-
-
-    // Add a cube
-    const geometryBox = new THREE.IcosahedronGeometry(); // (1, 2, 3)
+    // Add a b1
+    const geometryBox = new THREE.BoxGeometry(1, 4, 1); // (1, 2, 3)
     const materialBox = new THREE.MeshPhongMaterial({ color: 0xFC33FF }); // basic
+    const materialBox2 = new THREE.MeshBasicMaterial({color: 0x17135B})
     // materialBox.wireframe = true;
-    cube = new THREE.Mesh(geometryBox, materialBox);
-    cube.castShadow = true;
-    scene.add(cube);
+    b1 = new THREE.Mesh(geometryBox, materialBox);
+    b1.castShadow = true;
+    b1.position.x = -4
+    b1.position.z = -2
+    b1.position.y = 2
+    
+    const geometryBox2 = new THREE.BoxGeometry(1, 2, 1);
+    b2 = new THREE.Mesh(geometryBox2, materialBox2);
+    b2.position.x = -2.9
+    b2.position.z = -2
+    b2.position.y = 1
+    b2.castShadow = true;
+
+    const geometryCyl3 = new THREE.CylinderGeometry( 1, 1, 4, 50);
+    b3 = new THREE.Mesh(geometryCyl3, materialBox2);
+    b3.position.x = 1.5
+    b3.position.z = -2
+    b3.position.y = 2
+    b3.castShadow = true
+
+    const geometryBox4 = new THREE.BoxGeometry(2.7, 3, 1);
+    b4 = new THREE.Mesh(geometryBox4, materialBox2);
+    b4.position.x = -0.9
+    b4.position.z = -2
+    b4.position.y = 1.5
+    b4.castShadow = true;
+
+    const geometryBox5 = new THREE.BoxGeometry(1.5, 3, 1);
+    b5 = new THREE.Mesh(geometryBox4, materialBox2);
+    b5.position.x = 3.6
+    b5.position.z = -2
+    b5.position.y = 1.5
+    b5.castShadow = true;
+
+    scene.add(b1, b2, b3, b4, b5);
 
     // // load a texture
-    // // let textureMaterial: THREE.Material;
-    // // new THREE.TextureLoader().load('/resources/textures/uv_grid_opengl.jpg', function (texture) {
+    var loader = new THREE.TextureLoader();
+    var texture2 = loader.load('/resources/textures/b4.png');
+    var texture3 = loader.load('/resources/textures/b6.jpeg');
+    var texture4 = loader.load('/resources/textures/b5.jpeg');
+    let textureMaterial2 = new THREE.MeshBasicMaterial({ map: texture2 });
+    let textureMaterial3 = new THREE.MeshBasicMaterial({ map: texture3 });
+    let textureMaterial4 = new THREE.MeshBasicMaterial({ map: texture4 });
+    b2.material = textureMaterial2
+    b3.material = textureMaterial3
+    b4.material = textureMaterial4
+    b5.material = textureMaterial2
 
-    // //     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    // //     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    let textureMaterial: THREE.Material;
+    new THREE.TextureLoader().load('/resources/textures/b3.png', function (texture) {
 
-    // //     exampleTexture = texture;
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
-    // //     textureMaterial = new THREE.MeshBasicMaterial({ map: texture });
-    // //     // cube.material = textureMaterial;
+        exampleTexture = texture;
 
-    // //     const loader = new GLTFLoader().setPath('/resources/models/');
-    // //     loader.load('exampleModel.gltf', function (gltf) {
-    // //         exampleModel = gltf.scene;
+        textureMaterial = new THREE.MeshBasicMaterial({ map: texture });
+        b1.material = textureMaterial;
+        
 
-    // //         interface gltfMesh extends THREE.Object3D<THREE.Event> {
-    // //             material: THREE.Material
-    // //         }
+        // const loader = new GLTFLoader().setPath('/resources/models/');
+        // loader.load('exampleModel.gltf', function (gltf) {
+        //     exampleModel = gltf.scene;
 
-    // //         console.log(exampleModel);
+        //     interface gltfMesh extends THREE.Object3D<THREE.Event> {
+        //         material: THREE.Material
+        //     }
 
-    // //         exampleModel.traverse((child: THREE.Object3D<THREE.Event>) => {
-    // //             console.log(child);
-    // //             console.log(child.type === "Mesh");
-    // //             (child as gltfMesh).material = textureMaterial;
-    // //         })
+        //     console.log(exampleModel);
 
-    // //         scene.add(exampleModel);
-    // //     });
-    // // });
+        //     exampleModel.traverse((child: THREE.Object3D<THREE.Event>) => {
+        //         console.log(child);
+        //         console.log(child.type === "Mesh");
+        //         (child as gltfMesh).material = textureMaterial;
+        //     })
+
+        //     scene.add(exampleModel);
+        // });
+    });
 
 
 
     // // Add a plane
-    const geometryPlane = new THREE.PlaneBufferGeometry(6, 6, 10, 10);
-    const materialPlane = new THREE.MeshNormalMaterial({ 
-        // color: 0x666666,
-        side: THREE.DoubleSide });
-
-    const uniforms = {
+    const geometryPlane = new THREE.PlaneBufferGeometry(10, 5, 10, 10);
+    const materialPlane = new THREE.MeshBasicMaterial({ 
+        color: 0x17135B
+        // side: THREE.DoubleSide 
+    });
+    
+    // what are uniforms?
+    const uniforms = { 
         u_time: { type: 'f', value: 1.0 },
         u_resolution: { type: 'v2', value: new THREE.Vector2(800,800) },
         u_mouse: { type: 'v2', value: new THREE.Vector2() },
@@ -142,6 +195,7 @@ function initScene() {
 
     plane = new THREE.Mesh(geometryPlane, materialPlane);
     plane.position.z = -2;
+    plane.rotateX(-1.571)
     plane.receiveShadow = true;
     scene.add(plane);
 
@@ -192,8 +246,8 @@ function animate() {
     
     shaderMat.uniforms.u_time.value += delta;
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    // b1.rotation.x += 0.01;
+    // b1.rotation.y += 0.01;
 
     if (exampleModel != undefined) {
         exampleModel.rotateX(0.01);
