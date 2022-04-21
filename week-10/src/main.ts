@@ -15,12 +15,14 @@ let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let clock = new THREE.Clock();
+let pointer, raycaster;
+let TOUCH;
 
 let lightAmbient: THREE.AmbientLight;
 let lightPoint: THREE.PointLight;
 
 let controls: OrbitControls;
-let stats: any;
+// let stats: any;
 
 let b1: THREE.Mesh; // colon vs equal sign
 let b2: THREE.Mesh;
@@ -32,8 +34,9 @@ let coin: THREE.Mesh;
 let magnet; // "Magnet" (https://skfb.ly/6W9ZC) by aidanp is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
 let plane: THREE.Mesh;
-let exampleModel: THREE.Group;
-let exampleTexture: THREE.Texture;
+let plane2: THREE.Mesh;
+let plane3: THREE.Mesh;
+let plane4: THREE.Mesh;
 
 import vertexShader from '../resources/shaders/shader.vert?raw';
 import fragmentShader from '../resources/shaders/shader.frag?raw';
@@ -41,21 +44,27 @@ let shaderMat: ShaderMaterial;
 
 function main() {
     initScene();
-    initStats();
+    // initStats();
     initListeners();
 }
 
-function initStats() { // gives readout of frame rate for debugging, 3js lib
-    stats = new (Stats as any)();
-    document.body.appendChild(stats.dom);
-}
+// function initStats() { // gives readout of frame rate for debugging, 3js lib
+//     stats = new (Stats as any)();
+//     document.body.appendChild(stats.dom);
+// }
 
 function initScene() {
+    // background setup
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x000000 );
+    scene.background = new THREE.Color( 0xC7AFD2 );
 
+    // camera setup
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.set(0,4,6)
+
+    pointer = new THREE.Vector2();
+    // SOURCE: https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
+    raycaster = new THREE.Raycaster();
 
     renderer = new THREE.WebGLRenderer();
     renderer.shadowMap.enabled = true;
@@ -65,14 +74,21 @@ function initScene() {
 
     document.body.appendChild(renderer.domElement);
 
+    // restricting how user can control the stage
     controls = new OrbitControls(camera, renderer.domElement);
+    controls.enablePan = false
+    controls.maxDistance = 15
+    controls.minPolarAngle = 0
+    controls.maxPolarAngle = 1.571
+    controls.minAzimuthAngle = -1
+    controls.maxAzimuthAngle = 1
 
+    // light stuff
     lightAmbient = new THREE.AmbientLight(0xff3c33);
     scene.add(lightAmbient);
 
-    // Add a point light to add shadows
     // https://github.com/mrdoob/three.js/pull/14087#issuecomment-431003830
-    const shadowIntensity = 0.25;
+    const shadowIntensity = 0.55;
 
     lightPoint = new THREE.PointLight(0xffffff);
     lightPoint.position.set(-0.5, 0.5, 4);
@@ -91,16 +107,7 @@ function initScene() {
     lightPoint3.intensity = shadowIntensity;
     scene.add(lightPoint3);
 
-    // const mapSize = 1024; // Default 512
-    // const cameraNear = 0.5; // Default 0.5
-    // const cameraFar = 500; // Default 500
-    // lightPoint.shadow.mapSize.width = mapSize;
-    // lightPoint.shadow.mapSize.height = mapSize;
-    // lightPoint.shadow.camera.near = cameraNear;
-    // lightPoint.shadow.camera.far = cameraFar;
-
-    // Add a coin
-
+    // coins
     const coinGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 50)
     const coinMaterial = new THREE.MeshPhysicalMaterial({
         color: 0xFCDB20,
@@ -115,70 +122,33 @@ function initScene() {
         scene.add(coin);
     }
 
-    // Load magnet
-
+    // load a magnet object
     // SOURCE: https://threejs.org/docs/#manual/en/introduction/Loading-3D-models   
     const loader = new GLTFLoader();
-    loader.load( '/resources/models/magnet.gltf', function ( gltf ) {
-        scene.add( gltf.scene );
-    }, undefined, function ( error ) {
-	    console.log('gltf loader error');
-    } );
-    
+    loader.load('resources/models/scene.gltf',
+        function(gltf) {
+            console.log(gltf)
+            magnet = gltf.scene
+            magnet.scale.set(0.010, 0.010, 0.010)
+            magnet.position.y = 3.5
+            magnet.rotateZ(8)
+            magnet.castShadow = true
+            scene.add(magnet)
+        },
+        function ( xhr ) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+	    },
+	// called when loading has errors
+	    function ( error ) {
+		    console.log( 'An error happened' );
+	    }
+    );
 
-    // if magnet x = coin x, coin (x,y) = magnet (x,y)
-
-    // // load a texture
-    // var loader = new THREE.TextureLoader();
-    // var texture2 = loader.load('/resources/textures/b4.png');
-    // var texture3 = loader.load('/resources/textures/b6.jpeg');
-    // var texture4 = loader.load('/resources/textures/b5.jpeg');
-    // let textureMaterial2 = new THREE.MeshBasicMaterial({ map: texture2 });
-    // let textureMaterial3 = new THREE.MeshBasicMaterial({ map: texture3 });
-    // let textureMaterial4 = new THREE.MeshBasicMaterial({ map: texture4 });
-    // b2.material = textureMaterial2
-    // b3.material = textureMaterial3
-    // b4.material = textureMaterial4
-    // b5.material = textureMaterial2
-
-    // let textureMaterial: THREE.Material;
-    // new THREE.TextureLoader().load('/resources/textures/b3.png', function (texture) {
-
-    //     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    //     texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-    //     exampleTexture = texture;
-
-    //     textureMaterial = new THREE.MeshBasicMaterial({ map: texture });
-    //     b1.material = textureMaterial;
-        
-
-    //     // const loader = new GLTFLoader().setPath('/resources/models/');
-    //     // loader.load('exampleModel.gltf', function (gltf) {
-    //     //     exampleModel = gltf.scene;
-
-    //     //     interface gltfMesh extends THREE.Object3D<THREE.Event> {
-    //     //         material: THREE.Material
-    //     //     }
-
-    //     //     console.log(exampleModel);
-
-    //     //     exampleModel.traverse((child: THREE.Object3D<THREE.Event>) => {
-    //     //         console.log(child);
-    //     //         console.log(child.type === "Mesh");
-    //     //         (child as gltfMesh).material = textureMaterial;
-    //     //     })
-
-    //     //     scene.add(exampleModel);
-    //     // });
-    // });
-
-
-
-    // // Add a plane
+    // Add a plane
     const geometryPlane = new THREE.PlaneBufferGeometry(10, 5, 10, 10);
-    const materialPlane = new THREE.MeshBasicMaterial({ 
-        color: 0xCDE4E3
+    const geometryPlane2 = new THREE.PlaneBufferGeometry(5, 5, 10, 10);
+    const materialPlane = new THREE.MeshNormalMaterial({ 
+        // color: 0xCDE4E3
         // side: THREE.DoubleSide 
     });
     
@@ -197,16 +167,47 @@ function initScene() {
 
     plane = new THREE.Mesh(geometryPlane, materialPlane);
     // plane.position.z = -2;
-    plane.rotateX(-1.571)
+    plane.rotateX(-1.571);
     plane.receiveShadow = true;
-    scene.add(plane);
 
-    // Init animation
+    plane2 = new THREE.Mesh(geometryPlane, materialPlane);
+    plane2.rotateX(0)
+    plane2.receiveShadow = true;
+    plane2.position.y = 2.5
+    plane2.position.z = -2.5
+
+    plane3 = new THREE.Mesh(geometryPlane2, materialPlane);
+    // plane3.rotateX(0)
+    plane3.rotateY(1.571)
+    plane3.receiveShadow = true;
+    plane3.position.x = -5
+    plane3.position.y = 2.5
+
+    plane4 = new THREE.Mesh(geometryPlane2, materialPlane);
+    // plane3.rotateX(0)
+    plane4.rotateY(-1.571)
+    plane4.receiveShadow = true;
+    plane4.position.x = 5
+    plane4.position.y = 2.5
+
+
+    scene.add(plane, plane2, plane3, plane4);
+
     animate();
 }
 
+function onPointerMove( event ) {
+	// calculate pointer position in normalized device coordinates
+	// (-1 to +1) for both components
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+
+
 function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener( 'pointermove', onPointerMove );
 
     window.addEventListener('keydown', (event) => {
         const { key } = event;
@@ -233,13 +234,31 @@ function initListeners() {
     });
 }
 
+function onClick() {
+    // magnet.position.x = mouseX
+    // magnet.position.y = mouseY
+
+    // if (coin.position.x == mouseX):
+    //     coin.position.y = 4
+    //     coin.position.x = mouseX
+
+    // on onClick, drop all connected coins
+}
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function animate() {
+function moveMagnet() {
+    raycaster.setFromCamera(pointer, camera);
+    const intersects = raycaster.intersectObjects(scene.children, false);
+    for (let i = 0; i < intersects.length; i++) {
+        // intersects[i].object.material.transparent = false
+        intersects[i].object.position.x = pointer.x //?
+    }
+ }
+function animate() { // how can you call a function inside itself?
     requestAnimationFrame(() => {
         animate();
     });
@@ -251,12 +270,12 @@ function animate() {
     // b1.rotation.x += 0.01;
     // b1.rotation.y += 0.01;
 
-    if (exampleModel != undefined) {
-        exampleModel.rotateX(0.01);
-        exampleModel.rotateY(0.01);
-    }
+    // if (exampleModel != undefined) {
+    //     exampleModel.rotateX(0.01);
+    //     exampleModel.rotateY(0.01);
+    // }
 
-    if (stats) stats.update();
+    // if (stats) stats.update();
 
     // if (controls) controls.update();
 
