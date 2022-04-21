@@ -196,18 +196,18 @@ function initScene() {
     animate();
 }
 
-function onPointerMove( event ) {
-	// calculate pointer position in normalized device coordinates
-	// (-1 to +1) for both components
-	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+// function onPointerMove( event ) {
+// 	// calculate pointer position in normalized device coordinates
+// 	// (-1 to +1) for both components
+// 	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+// 	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-}
+// }
 
 
 function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
-    window.addEventListener( 'pointermove', onPointerMove );
+    // window.addEventListener( 'pointermove', onPointerMove );
 
     window.addEventListener('keydown', (event) => {
         const { key } = event;
@@ -250,14 +250,14 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function moveMagnet() {
-    raycaster.setFromCamera(pointer, camera);
-    const intersects = raycaster.intersectObjects(scene.children, false);
-    for (let i = 0; i < intersects.length; i++) {
-        // intersects[i].object.material.transparent = false
-        intersects[i].object.position.x = pointer.x //?
-    }
- }
+// function moveMagnet() {
+//     raycaster.setFromCamera(pointer, camera);
+//     const intersects = raycaster.intersectObjects(scene.children, false);
+//     for (let i = 0; i < intersects.length; i++) {
+//         // intersects[i].object.material.transparent = false
+//         intersects[i].object.position.x = pointer.x //?
+//     }
+//  }
 function animate() { // how can you call a function inside itself?
     requestAnimationFrame(() => {
         animate();
