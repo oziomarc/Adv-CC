@@ -1,0 +1,28 @@
+body {
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: #2d6fb1;
+
+	margin: 0;
+	padding: 0;
+    // display: flex;
+}
+
+// .child {
+//     justify-content: flex-end;
+//     align-self: flex-end;
+// }
+.fixed-top {
+    display: flex;
+    position: fixed;
+    // flex-flow: column nowrap;
+    flex-direction: column;
+    align-content: flex-end;
+    // align-items: stretch;
+    // justify-content: flex-end;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}

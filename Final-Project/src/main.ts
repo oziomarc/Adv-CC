@@ -25,19 +25,13 @@ let lightPoint: THREE.PointLight;
 let controls: OrbitControls;
 // let stats: any;
 
-let b1: THREE.Mesh; // colon vs equal sign
-let b2: THREE.Mesh;
-let b3: THREE.Mesh;
-let b4: THREE.Mesh;
-let b5: THREE.Mesh;
+// let coin: THREE.Mesh;
+// let magnet; // "Magnet" (https://skfb.ly/6W9ZC) by aidanp is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
-let coin: THREE.Mesh;
-let magnet; // "Magnet" (https://skfb.ly/6W9ZC) by aidanp is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-
-let plane: THREE.Mesh;
-let plane2: THREE.Mesh;
-let plane3: THREE.Mesh;
-let plane4: THREE.Mesh;
+// let plane: THREE.Mesh;
+// let plane2: THREE.Mesh;
+// let plane3: THREE.Mesh;
+// let plane4: THREE.Mesh;
 
 // import vertexShader from '../resources/shaders/shader.vert?raw';
 // import fragmentShader from '../resources/shaders/shader.frag?raw';
@@ -57,11 +51,11 @@ function main() {
 function initScene() {
     // background setup
     scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xC7AFD2 );
+    scene.background = new THREE.Color( 0x5D6EAF );
 
     // camera setup
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0,4,6)
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0,2,8)
 
     pointer = new THREE.Vector2();
     // SOURCE: https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
@@ -109,19 +103,19 @@ function initScene() {
     scene.add(lightPoint3);
 
     // coins
-    const coinGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 50)
-    const coinMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0xFCDB20,
-        roughness: 100
-    })
-    for (let i = 0; i < 25; ++i) {
-        coin = new THREE.Mesh(coinGeometry, coinMaterial)
-        coin.castShadow = true
-        coin.position.y = .05
-        coin.position.x = Math.random()*9 - 4.7
-        coin.position.z = Math.random()*5 - 2.5
-        scene.add(coin);
-    }
+    // const coinGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 50)
+    // const coinMaterial = new THREE.MeshPhysicalMaterial({
+    //     color: 0xFCDB20,
+    //     roughness: 100
+    // })
+    // for (let i = 0; i < 25; ++i) {
+    //     coin = new THREE.Mesh(coinGeometry, coinMaterial)
+    //     coin.castShadow = true
+    //     coin.position.y = -0.9
+    //     coin.position.x = Math.random()*9 - 4.7
+    //     coin.position.z = Math.random()*5 - 2.5
+    //     scene.add(coin);
+    // }
 
     // Add a plane
     const geometryPlane = new THREE.PlaneBufferGeometry(10, 5, 10, 10);
@@ -144,33 +138,34 @@ function initScene() {
         // fragmentShader: fragmentShader,
     });
 
-    plane = new THREE.Mesh(geometryPlane, materialPlane);
-    // plane.position.z = -2;
-    plane.rotateX(-1.571);
-    plane.receiveShadow = true;
+    // plane = new THREE.Mesh(geometryPlane, materialPlane);
+    // // plane.position.z = -2;
+    // plane.rotateX(-1.571);
+    // plane.receiveShadow = true;
+    // plane.position.y = -1
 
-    plane2 = new THREE.Mesh(geometryPlane, materialPlane);
-    plane2.rotateX(0)
-    plane2.receiveShadow = true;
-    plane2.position.y = 2.5
-    plane2.position.z = -2.5
+    // plane2 = new THREE.Mesh(geometryPlane, materialPlane);
+    // plane2.rotateX(0)
+    // plane2.receiveShadow = true;
+    // plane2.position.y = 1.5
+    // plane2.position.z = -2.5
 
-    plane3 = new THREE.Mesh(geometryPlane2, materialPlane);
-    // plane3.rotateX(0)
-    plane3.rotateY(1.571)
-    plane3.receiveShadow = true;
-    plane3.position.x = -5
-    plane3.position.y = 2.5
+    // plane3 = new THREE.Mesh(geometryPlane2, materialPlane);
+    // // plane3.rotateX(0)
+    // plane3.rotateY(1.571)
+    // plane3.receiveShadow = true;
+    // plane3.position.x = -5
+    // plane3.position.y = 1.5
 
-    plane4 = new THREE.Mesh(geometryPlane2, materialPlane);
-    // plane3.rotateX(0)
-    plane4.rotateY(-1.571)
-    plane4.receiveShadow = true;
-    plane4.position.x = 5
-    plane4.position.y = 2.5
+    // plane4 = new THREE.Mesh(geometryPlane2, materialPlane);
+    // // plane3.rotateX(0)
+    // plane4.rotateY(-1.571)
+    // plane4.receiveShadow = true;
+    // plane4.position.x = 5
+    // plane4.position.y = 1.5
 
 
-    scene.add(plane, plane2, plane3, plane4);
+    // scene.add(plane, plane2, plane3, plane4);
 
     animate();
 }
