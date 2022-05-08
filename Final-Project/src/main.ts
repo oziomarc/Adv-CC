@@ -1,52 +1,111 @@
-// Week 10 Assignment: Interaction
+// Final Project: Music Visualizer
 
 /* 
-on mouse/key press create gold coins that are attracted to magnet being controlled by mouse until electricity buttton is turned off
+Wave motion is controlled by BPM, color can be chnageed using arduino joystick module, and LED light matches wave color & blinks to BPM
 */
+
+/* 
+Input the BPM of a song to have a cool visualizer running to elevate the space around you <3
+*/
+
+// sound intake
+// BPM (Enter manually or detect?)
+// manipulating wave frequency
+// manipulating color
+// connecting Ardunio
+// UI
+// electron
+// spotify API??
+// button/joystick adds another ring up until 10, then decreases
+
+
 export {};
 
 import './style.scss';
-import * as THREE from 'three'; 1
+import * as THREE from 'three';
+// import * as PIXI from "pixi.js"
 import Stats from 'three/examples/jsm/libs/stats.module';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { ShaderMaterial } from 'three';
+import { gsap } from "gsap";
+
+let tl = gsap.timeline();
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let clock = new THREE.Clock();
-let pointer, raycaster;
-let TOUCH;
+let bpm;
+let points: THREE.Mesh;
+let pointAr: Array<any> = []
 
 let lightAmbient: THREE.AmbientLight;
 let lightPoint: THREE.PointLight;
 
 let controls: OrbitControls;
-// let stats: any;
-
-// let coin: THREE.Mesh;
-// let magnet; // "Magnet" (https://skfb.ly/6W9ZC) by aidanp is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-
-// let plane: THREE.Mesh;
-// let plane2: THREE.Mesh;
-// let plane3: THREE.Mesh;
-// let plane4: THREE.Mesh;
-
-// import vertexShader from '../resources/shaders/shader.vert?raw';
-// import fragmentShader from '../resources/shaders/shader.frag?raw';
+let stats: any;
 let shaderMat: ShaderMaterial;
 
-function main() {
+let plane: THREE.Mesh;
+let plane2: THREE.Mesh;
+let plane3: THREE.Mesh;
+let plane4: THREE.Mesh;
+
+import vertexShader from '../resources/shaders/shader.vert?raw';
+import fragmentShader from '../resources/shaders/shader.frag?raw';
+
+const main = async () => {
     initScene();
-    // initStats();
+    initStats();
     initListeners();
+    // pointAr.forEach((frame, bpm) => {
+    //     let bpmct
+    //     let mid = bpm/2
+    //     bpmct = bpm
+        
+    //     if (i % 2 == 0){
+    //         tl       
+    //             .to(frame,{
+    //                 position: window.innerHeight,
+    //                 duration: 3.2
+    //             }, 0+i/50)
+    //             .to(frame,{
+    //                 height: 0,
+    //                 duration: 1.5
+    //             }, 1.7+i/50)
+    //     } else {
+    //         tl
+    //             .to(frame,{
+    //                 height: -window.innerHeight+20,
+    //                 duration: 1.5
+    //             } , i/19)
+    //             .to(frame,{
+    //                 height: 0,
+    //                 duration: 3
+    //             }, 1.7+i/20)
+    //     }
+    // })
+    // tl.repeat(-1)
+    // .ticker.add(update);
 }
 
-// function initStats() { // gives readout of frame rate for debugging, 3js lib
-//     stats = new (Stats as any)();
-//     document.body.appendChild(stats.dom);
-// }
+// function update(delta:number){
+ 
+// } 
+
+
+
+function bpmInput() {
+    var x = document.createElement("INPUT");
+    x.setAttribute("type", "number");
+    x.setAttribute("value", "12345");
+    document.body.appendChild(x);
+}
+
+function initStats() { // gives readout of frame rate for debugging, 3js lib
+    stats = new (Stats as any)();
+    document.body.appendChild(stats.dom);
+}
 
 function initScene() {
     // background setup
@@ -54,12 +113,8 @@ function initScene() {
     scene.background = new THREE.Color( 0x5D6EAF );
 
     // camera setup
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0,2,8)
-
-    pointer = new THREE.Vector2();
-    // SOURCE: https://github.com/mrdoob/three.js/blob/master/examples/webgl_interactive_cubes.html
-    raycaster = new THREE.Raycaster();
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 400);
+    camera.position.set(0,10,60)
 
     renderer = new THREE.WebGLRenderer();
     renderer.shadowMap.enabled = true;
@@ -71,12 +126,12 @@ function initScene() {
 
     // restricting how user can control the stage
     controls = new OrbitControls(camera, renderer.domElement);
-    controls.enablePan = false
-    controls.maxDistance = 15
-    controls.minPolarAngle = 0
-    controls.maxPolarAngle = 1.571
-    controls.minAzimuthAngle = -1
-    controls.maxAzimuthAngle = 1
+    // controls.enablePan = false
+    // controls.maxDistance = 15
+    // controls.minPolarAngle = 0
+    // controls.maxPolarAngle = 1.571
+    // controls.minAzimuthAngle = -1
+    // controls.maxAzimuthAngle = 1
 
     // light stuff
     lightAmbient = new THREE.AmbientLight(0xff3c33);
@@ -102,20 +157,46 @@ function initScene() {
     lightPoint3.intensity = shadowIntensity;
     scene.add(lightPoint3);
 
-    // coins
-    // const coinGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.05, 50)
-    // const coinMaterial = new THREE.MeshPhysicalMaterial({
-    //     color: 0xFCDB20,
-    //     roughness: 100
-    // })
-    // for (let i = 0; i < 25; ++i) {
-    //     coin = new THREE.Mesh(coinGeometry, coinMaterial)
-    //     coin.castShadow = true
-    //     coin.position.y = -0.9
-    //     coin.position.x = Math.random()*9 - 4.7
-    //     coin.position.z = Math.random()*5 - 2.5
-    //     scene.add(coin);
+    const pointGeo = new THREE.SphereGeometry(0.2)
+    const pointMat = new THREE.MeshNormalMaterial({
+        // color: 0xfff00f
+    });
+    let diam = 1;
+    let pointCt = 6
+    let angle = 0
+    // for (let i = angle; i < 50; i+=Math.PI*2/pointCt) {
+    //     points = new THREE.Mesh(pointGeo, pointMat)
+    //     points.position.x = diam/2*Math.cos(i)
+    //     points.position.z = diam/2*Math.sin(i)
+    //     points.position.y = 0
+    //     points.castShadow = true
+    //     scene.add(points);
+    //     diam += 1
+    //     // angle += 1.571
     // }
+
+    for (let i = -30; i < 30; ++i) {
+        for (let j = -30; j < 30; ++j) {
+            points = new THREE.Mesh(pointGeo, pointMat)
+            points.position.x = i
+            points.position.z = j
+            points.position.y = 0
+            points.castShadow = true
+            pointAr.push(points)
+            scene.add(points);
+        }
+        // var duration  = Math.random() *0.5;
+        // var frequency = Math.random() *6;
+        // var amplitude = Math.random() *40;
+
+        // tl.to(points, duration, { 
+        //     y: -points.position.y, 
+        //     repeat: -1, 
+        //     yoyo: true 
+        // }).progress( / segments * frequency);
+    }
+
+    
 
     // Add a plane
     const geometryPlane = new THREE.PlaneBufferGeometry(10, 5, 10, 10);
@@ -124,7 +205,7 @@ function initScene() {
         // color: 0xCDE4E3
         // side: THREE.DoubleSide 
     });
-    
+
     // what are uniforms?
     const uniforms = { 
         u_time: { type: 'f', value: 1.0 },
@@ -138,35 +219,7 @@ function initScene() {
         // fragmentShader: fragmentShader,
     });
 
-    // plane = new THREE.Mesh(geometryPlane, materialPlane);
-    // // plane.position.z = -2;
-    // plane.rotateX(-1.571);
-    // plane.receiveShadow = true;
-    // plane.position.y = -1
-
-    // plane2 = new THREE.Mesh(geometryPlane, materialPlane);
-    // plane2.rotateX(0)
-    // plane2.receiveShadow = true;
-    // plane2.position.y = 1.5
-    // plane2.position.z = -2.5
-
-    // plane3 = new THREE.Mesh(geometryPlane2, materialPlane);
-    // // plane3.rotateX(0)
-    // plane3.rotateY(1.571)
-    // plane3.receiveShadow = true;
-    // plane3.position.x = -5
-    // plane3.position.y = 1.5
-
-    // plane4 = new THREE.Mesh(geometryPlane2, materialPlane);
-    // // plane3.rotateX(0)
-    // plane4.rotateY(-1.571)
-    // plane4.receiveShadow = true;
-    // plane4.position.x = 5
-    // plane4.position.y = 1.5
-
-
     // scene.add(plane, plane2, plane3, plane4);
-
     animate();
 }
 
@@ -209,14 +262,7 @@ function initListeners() {
 }
 
 function onClick() {
-    // magnet.position.x = mouseX
-    // magnet.position.y = mouseY
-
-    // if (coin.position.x == mouseX):
-    //     coin.position.y = 4
-    //     coin.position.x = mouseX
-
-    // on onClick, drop all connected coins
+   
 }
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -224,14 +270,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// function moveMagnet() {
-//     raycaster.setFromCamera(pointer, camera);
-//     const intersects = raycaster.intersectObjects(scene.children, false);
-//     for (let i = 0; i < intersects.length; i++) {
-//         // intersects[i].object.material.transparent = false
-//         intersects[i].object.position.x = pointer.x //?
-//     }
-//  }
 function animate() { // how can you call a function inside itself?
     requestAnimationFrame(() => {
         animate();
