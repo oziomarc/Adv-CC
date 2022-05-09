@@ -30,14 +30,11 @@ import { ShaderMaterial } from 'three';
 import { gsap } from "gsap";
 
 let tl = gsap.timeline();
-// tl.defaultEase = Sine.easeInOut;
-ease: "sine"
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
 let camera: THREE.PerspectiveCamera;
 let clock = new THREE.Clock();
-let bpm;
 let points: THREE.Mesh;
 let pointAr: Array<any> = []
 
@@ -48,28 +45,23 @@ let controls: OrbitControls;
 let stats: any;
 let shaderMat: ShaderMaterial;
 
-let plane: THREE.Mesh;
-let plane2: THREE.Mesh;
-let plane3: THREE.Mesh;
-let plane4: THREE.Mesh;
-
 import vertexShader from '../resources/shaders/shader.vert?raw';
 import fragmentShader from '../resources/shaders/shader.frag?raw';
 
 function main() {
     initScene();
-    initStats();
+    // initStats();
     initListeners();
     bpmInput();
 }
 
 function bpmInput() {
-    var x = document.createElement("INPUT");
+    var bpm = document.createElement("INPUT");
     var label = document.createElement("h3")
     label.innerHTML = "Song BPM:"
-    x.setAttribute("type", "number");
-    x.setAttribute("value", "0");
-    document.body.prepend(label, x);
+    bpm.setAttribute("type", "number");
+    bpm.setAttribute("value", "0");
+    document.body.prepend(label, bpm);
 }
 
 function initStats() { // gives readout of frame rate for debugging, 3js lib
