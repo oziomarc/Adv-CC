@@ -30,6 +30,8 @@ import { ShaderMaterial } from 'three';
 import { gsap } from "gsap";
 
 let tl = gsap.timeline();
+// tl.defaultEase = Sine.easeInOut;
+ease: "sine"
 
 let renderer: THREE.WebGLRenderer;
 let scene: THREE.Scene;
@@ -54,53 +56,20 @@ let plane4: THREE.Mesh;
 import vertexShader from '../resources/shaders/shader.vert?raw';
 import fragmentShader from '../resources/shaders/shader.frag?raw';
 
-const main = async () => {
+function main() {
     initScene();
     initStats();
     initListeners();
-    // pointAr.forEach((frame, bpm) => {
-    //     let bpmct
-    //     let mid = bpm/2
-    //     bpmct = bpm
-        
-    //     if (i % 2 == 0){
-    //         tl       
-    //             .to(frame,{
-    //                 position: window.innerHeight,
-    //                 duration: 3.2
-    //             }, 0+i/50)
-    //             .to(frame,{
-    //                 height: 0,
-    //                 duration: 1.5
-    //             }, 1.7+i/50)
-    //     } else {
-    //         tl
-    //             .to(frame,{
-    //                 height: -window.innerHeight+20,
-    //                 duration: 1.5
-    //             } , i/19)
-    //             .to(frame,{
-    //                 height: 0,
-    //                 duration: 3
-    //             }, 1.7+i/20)
-    //     }
-    // })
-    // tl.repeat(-1)
-    // .ticker.add(update);
 }
 
-// function update(delta:number){
- 
-// } 
 
 
-
-function bpmInput() {
-    var x = document.createElement("INPUT");
-    x.setAttribute("type", "number");
-    x.setAttribute("value", "12345");
-    document.body.appendChild(x);
-}
+// function bpmInput() {
+//     var x = document.createElement("INPUT");
+//     x.setAttribute("type", "number");
+//     x.setAttribute("value", "12345");
+//     document.body.appendChild(x);
+// }
 
 function initStats() { // gives readout of frame rate for debugging, 3js lib
     stats = new (Stats as any)();
@@ -185,19 +154,26 @@ function initScene() {
             pointAr.push(points)
             scene.add(points);
         }
-        // var duration  = Math.random() *0.5;
-        // var frequency = Math.random() *6;
-        // var amplitude = Math.random() *40;
+        var total = 3600;
+        var segments = 30;
+        var interval = 669 / segments;
 
-        // tl.to(points, duration, { 
-        //     y: -points.position.y, 
-        //     repeat: -1, 
-        //     yoyo: true 
-        // }).progress( / segments * frequency);
+        var duration  = Math.random() *0.5;
+        var frequency = Math.random() *6;
+        var amplitude = Math.random() *40;
+
+        tl.to(points, duration, { 
+            y: -points.position.y, 
+            repeat: -1, 
+            yoyo: true 
+        }).progress( i / 30 * frequency);
+            gsap.to(points.position, {
+                duration: 10,
+                y: 10,
+                ease: "sine"
+            })
     }
-
     
-
     // Add a plane
     const geometryPlane = new THREE.PlaneBufferGeometry(10, 5, 10, 10);
     const geometryPlane2 = new THREE.PlaneBufferGeometry(5, 5, 10, 10);
