@@ -60,16 +60,17 @@ function main() {
     initScene();
     initStats();
     initListeners();
+    bpmInput();
 }
 
-
-
-// function bpmInput() {
-//     var x = document.createElement("INPUT");
-//     x.setAttribute("type", "number");
-//     x.setAttribute("value", "12345");
-//     document.body.appendChild(x);
-// }
+function bpmInput() {
+    var x = document.createElement("INPUT");
+    var label = document.createElement("h3")
+    label.innerHTML = "Song BPM:"
+    x.setAttribute("type", "number");
+    x.setAttribute("value", "0");
+    document.body.prepend(label, x);
+}
 
 function initStats() { // gives readout of frame rate for debugging, 3js lib
     stats = new (Stats as any)();
