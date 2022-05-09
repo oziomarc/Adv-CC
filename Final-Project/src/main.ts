@@ -153,25 +153,42 @@ function initScene() {
             points.castShadow = true
             pointAr.push(points)
             scene.add(points);
+            if(i%2 == 0) {
+               gsap.to(points.position, {
+                    duration: i*i/j, //bpm ?
+                    y: 0+i, //intensity
+                    ease: "sine",
+                    repeat: -1
+                }) 
+            }
+            if(j%2 == 0) {
+                gsap.to(points.position, {
+                     duration: i*j/j, //bpm ?
+                     y: -5, //intensity
+                     ease: "sine",
+                     repeat: -1
+                 }) 
+                }
+            
         }
-        var total = 3600;
-        var segments = 30;
-        var interval = 669 / segments;
+        // var total = 3600;
+        // var segments = 30;
+        // var interval = 669 / segments;
 
-        var duration  = Math.random() *0.5;
-        var frequency = Math.random() *6;
-        var amplitude = Math.random() *40;
+        // var duration  = Math.random() *0.5;
+        // var frequency = Math.random() *6;
+        // var amplitude = Math.random() *40;
 
-        tl.to(points, duration, { 
-            y: -points.position.y, 
-            repeat: -1, 
-            yoyo: true 
-        }).progress( i / 30 * frequency);
-            gsap.to(points.position, {
-                duration: 10,
-                y: 10,
-                ease: "sine"
-            })
+        // tl.to(points, duration, { 
+        //     y: -points.position.y, 
+        //     repeat: -1, 
+        //     yoyo: true 
+        // }).progress( i / 30 * frequency);
+        // for(i = 0; i < pointAr.length; ++i) {
+            
+        // }
+
+            
     }
     
     // Add a plane
